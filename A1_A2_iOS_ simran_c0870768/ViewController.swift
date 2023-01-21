@@ -33,9 +33,13 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
         map.delegate = self
         map.isZoomEnabled = true
         singleTap()
+        doubletap()
         direction.isHidden = true
         
-     
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(removeAnnotation))
+        longPress.delaysTouchesBegan = true
+        map.addGestureRecognizer(longPress)
+       
         
     }
     
@@ -71,8 +75,8 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
                              title: String,
                              subtitle: String) {
             
-            let latDelta: CLLocationDegrees = 0.16
-            let lngDelta: CLLocationDegrees = 0.16
+            let latDelta: CLLocationDegrees = 0.14
+            let lngDelta: CLLocationDegrees = 0.14
             
             let span = MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lngDelta)
             let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -88,6 +92,13 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
         for polygon in map.overlays {
             map.removeOverlay(polygon)
         }
+    }
+    private func removeLabel() {
+        for label in CustomDistance {
+            label.removeFromSuperview()
+        }
+        
+        CustomDistance = []
     }
  
     func addPolygon() {
@@ -166,8 +177,7 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
                            
             CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude), completionHandler: {(placemarks, error) in
                 
-                if error != nil {
-                    print(error!)
+                if self.pinnedAnnotations > 3 {
                     self.removePin()
                 }
                 else {
@@ -200,16 +210,77 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
         single.numberOfTapsRequired = 1
         map.addGestureRecognizer(single)
     }
+    func doubletap(){
+         let double = UITapGestureRecognizer(target: self, action: #selector(removePin))
+         double.numberOfTapsRequired = 2
+         map.addGestureRecognizer(double)
+     }
 
-    func removePin() {
+
+    @objc func removePin() {
         for annotation in map.annotations {
             map.removeAnnotation(annotation)
         }
     }
+    @objc func removeAnnotation(point: UITapGestureRecognizer) {
+      
+        let pointTouched: CGPoint = point.location(in: map)
+        
+        let coordinate =  map.convert(pointTouched, toCoordinateFrom: map)
+        let location: CLLocationCoordinate2D = coordinate
+          
+       
+        CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: location.latitude, longitude: location.longitude), completionHandler: { (placemarks, error) in
+            if error != nil {
+                print(error!)
+            } else {
+                DispatchQueue.main.async {
+                    if let placeMark = placemarks?[0] {
+                        
+                        if placeMark.locality != nil {
+                            
+                            for myAnnotation in self.map.annotations{
+
+                                    self.removeOverlays()
+                                    self.removeLabel()
+                                    self.map.removeAnnotation(myAnnotation)
+                                }
+                            }
+                        }
+                    }
+                }
+            
+        })
+    }
+//    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+//
+//        if annotation is MKUserLocation{
+//            return nil
+//        }
+//
+//        switch annotation.title {
+//        case "A":
+//            let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "marker1")
+//            annotationView.markerTintColor = UIColor.blue
+//            return annotationView
+//        case "B":
+//            let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "marker2")
+//            annotationView.markerTintColor = UIColor.orange
+//            annotationView.animatesWhenAdded = true
+//            return annotationView
+//        case "C":
+//            let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "marker3")
+//            annotationView.markerTintColor = UIColor.black
+//            annotationView.animatesWhenAdded = true
+//            return annotationView
+//        default:
+//            return nil
+//        }
+//    }
     @IBAction func drawRoute(_ sender: UIButton) {
         removeOverlays()
+        removeLabel()
         print(map.annotations.count)
-        
         var nextIndex = 0
         for index in 0 ... 2 {
             if index == 2 {
@@ -248,34 +319,8 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
     
 }
     extension ViewController: MKMapViewDelegate {
+        
                 
-                
-                
-                func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-
-                    if annotation is MKUserLocation{
-                        return nil
-                    }
-
-                    switch annotation.title {
-                    case "A":
-                        let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "marker1")
-                        annotationView.markerTintColor = UIColor.blue
-                        return annotationView
-                    case "B":
-                        let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "marker2")
-                        annotationView.markerTintColor = UIColor.orange
-                        annotationView.animatesWhenAdded = true
-                        return annotationView
-                    case "C":
-                        let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "marker3")
-                        annotationView.markerTintColor = UIColor.black
-                        annotationView.animatesWhenAdded = true
-                        return annotationView
-                    default:
-                        return nil
-                    }
-                }
       
 
                 func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
