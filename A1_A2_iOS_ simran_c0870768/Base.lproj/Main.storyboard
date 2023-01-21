@@ -20,7 +20,11 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="abO-aj-ZAX">
                                 <rect key="frame" x="0.0" y="-1" width="393" height="852"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <gestureRecognizers/>
                                 <standardMapConfiguration key="preferredConfiguration"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="vay-PX-n30" appends="YES" id="57T-x7-5A2"/>
+                                </connections>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xc0-Uj-4iy">
                                 <rect key="frame" x="311" y="729" width="57" height="54"/>
@@ -45,6 +49,17 @@
                                     <action selector="zoomIn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="p2W-yy-Ov2"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gad-yQ-bzV">
+                                <rect key="frame" x="30" y="748" width="48" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" image="person.fill" catalog="system">
+                                    <color key="baseBackgroundColor" systemColor="labelColor"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="userLocation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hzy-TC-Bbc"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dB5-gY-qKA">
                                 <rect key="frame" x="319" y="170" width="49" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -64,11 +79,13 @@
                     <connections>
                         <outlet property="direction" destination="xc0-Uj-4iy" id="MzQ-7O-2r8"/>
                         <outlet property="map" destination="abO-aj-ZAX" id="wXj-Ca-cpj"/>
+                        <outlet property="userLocation" destination="gad-yQ-bzV" id="3nK-Tt-fY8"/>
                         <outlet property="zoomIn" destination="eLU-UC-ELk" id="4vm-Y7-P9n"/>
                         <outlet property="zoomOut" destination="dB5-gY-qKA" id="i96-dk-r9a"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="vay-PX-n30"/>
             </objects>
             <point key="canvasLocation" x="101.5267175572519" y="3.5211267605633805"/>
         </scene>
@@ -76,7 +93,11 @@
     <resources>
         <image name="minus.magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="paperplane.fill" catalog="system" width="128" height="119"/>
+        <image name="person.fill" catalog="system" width="128" height="120"/>
         <image name="plus.magnifyingglass" catalog="system" width="128" height="117"/>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
