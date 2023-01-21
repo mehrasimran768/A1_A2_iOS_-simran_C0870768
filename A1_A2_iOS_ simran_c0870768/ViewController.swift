@@ -185,11 +185,14 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
                         if let placeMark = placemarks?[0] {
                             
                             if placeMark.locality != nil {
-                                let place = city(coordinate: coordinate)
+                                
+                                let place = city(title:"A",coordinate: coordinate)
                             
                                 if self.pinnedAnnotations <= 2 {
+                                    
                                     self.map.addAnnotation(place)
                                 }
+                            
                                 if self.pinnedAnnotations == 2 {
 
                                     self.addPolyline()

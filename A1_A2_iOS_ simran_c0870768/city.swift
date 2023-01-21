@@ -14,11 +14,11 @@ class city : NSObject, MKAnnotation {
     
     var coordinate: CLLocationCoordinate2D
     
-    init(title: String? = nil, coordinate: CLLocationCoordinate2D) {
+    init(title: String, coordinate: CLLocationCoordinate2D) {
         self.title = title
         self.coordinate = coordinate
         
         
     }
-    
+
 }
