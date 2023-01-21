@@ -31,11 +31,11 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         map.delegate = self
-        map.isZoomEnabled = true
+        map.isZoomEnabled = false
         singleTap()
-        doubletap()
-        direction.isHidden = true
+       
         
+       // for removing annotation
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(removeAnnotation))
         longPress.delaysTouchesBegan = true
         map.addGestureRecognizer(longPress)
@@ -88,7 +88,7 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
     }
     
     func removeOverlays() {
-        direction.isHidden = true
+    
         for polygon in map.overlays {
             map.removeOverlay(polygon)
         }
@@ -117,7 +117,7 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
         map.addOverlay(polygon)
     }
     func addPolyline() {
-        direction.isHidden = false
+       
         var myAnnotations: [CLLocationCoordinate2D] = [CLLocationCoordinate2D]()
         for mapAnnotation in map.annotations {
             myAnnotations.append(mapAnnotation.coordinate)
@@ -243,6 +243,7 @@ class ViewController: UIViewController , CLLocationManagerDelegate{
 
                                     self.removeOverlays()
                                     self.removeLabel()
+                                    self.map.showsUserLocation = false
                                     self.map.removeAnnotation(myAnnotation)
                                 }
                             }
